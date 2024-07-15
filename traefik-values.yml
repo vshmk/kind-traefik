@@ -1,0 +1,26 @@
+additionalArguments:
+  - "--accesslog.fields.headers.defaultmode=keep"
+  - "--providers.file.filename=/data/files/config.yml"
+  - "--entryPoints.websecure.forwardedHeaders.trustedIPs=10.4.0.0/16,10.6.0.0/16" # эти две строчки отвечают за правильное отображение ip адресов в логах spacer
+  - "--entryPoints.web.forwardedHeaders.trustedIPs=10.4.0.0/16,10.6.0.0/16" # необходимо добавить подсети, в которых находятся поды на нодах
+  - "--accesslog.bufferingsize=10" # https://doc.traefik.io/traefik/observability/access-logs/#bufferingsize
+  # - "--core.defaultRuleSyntax=v2"
+
+updateStrategy:
+  rollingUpdate: null
+  type: Recreate
+
+instanceLabelOverride: traefik
+
+ports:
+  web:
+    expose:
+      default: true
+    nodePort: 32080
+  websecure:
+    expose:
+      default: true
+    nodePort: 32443
+service:
+  enabled: true
+  type: NodePort
